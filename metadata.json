@@ -1,0 +1,5 @@
+{
+  "name": "Tennis League Pro",
+  "description": "A mobile-optimized dashboard for tracking tennis league matches, scores, and player statistics.",
+  "requestFramePermissions": []
+}

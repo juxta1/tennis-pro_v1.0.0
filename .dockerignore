@@ -1,0 +1,8 @@
+node_modules
+dist
+tennis_league.db
+.env
+.env.example
+.gitignore
+Dockerfile
+.dockerignore
