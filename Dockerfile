@@ -34,15 +34,13 @@ RUN apt-get update && apt-get install -y \
 
 # Copy package files and install production dependencies only
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm install --omit=dev && npm install -g tsx
 
 # Copy the built frontend assets
 COPY --from=builder /app/dist ./dist
 
-# Copy the server file and the database
+# Copy the server file
 COPY --from=builder /app/server.ts ./server.ts
-# Note: In a real production environment, you should use a Docker volume for the database file
-COPY --from=builder /app/tennis_league.db ./tennis_league.db
 
 # Set environment variables
 ENV NODE_ENV=production
@@ -51,5 +49,5 @@ ENV PORT=3000
 # Expose the port
 EXPOSE 3000
 
-# Start the application using Node 22's native TypeScript support
-CMD ["node", "--experimental-strip-types", "server.ts"]
+# Start the application using tsx
+CMD ["tsx", "server.ts"]
