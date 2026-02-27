@@ -22,17 +22,22 @@ try {
 // Initialize database
 db.exec(`
   CREATE TABLE IF NOT EXISTS settings (
-    key TEXT PRIMARY KEY,
-    value TEXT
+    user_id TEXT,
+    key TEXT,
+    value TEXT,
+    PRIMARY KEY (user_id, key)
   );
 
   CREATE TABLE IF NOT EXISTS players (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE NOT NULL
+    user_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    UNIQUE(user_id, name)
   );
 
   CREATE TABLE IF NOT EXISTS matches (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
     player1 TEXT NOT NULL,
     player2 TEXT NOT NULL,
     date TEXT NOT NULL,
@@ -46,8 +51,30 @@ db.exec(`
   );
 `);
 
+// Migration: Check if user_id exists in matches, if not, add it to all tables
+try {
+  db.prepare("SELECT user_id FROM matches LIMIT 1").get();
+} catch (e) {
+  console.log("Migrating database to include user_id...");
+  db.exec(`
+    ALTER TABLE matches ADD COLUMN user_id TEXT DEFAULT 'default';
+    ALTER TABLE players ADD COLUMN user_id TEXT DEFAULT 'default';
+    
+    -- Recreate settings table to include user_id in primary key
+    CREATE TABLE settings_new (
+      user_id TEXT,
+      key TEXT,
+      value TEXT,
+      PRIMARY KEY (user_id, key)
+    );
+    INSERT INTO settings_new (user_id, key, value) SELECT 'default', key, value FROM settings;
+    DROP TABLE settings;
+    ALTER TABLE settings_new RENAME TO settings;
+  `);
+}
+
 // Seed dummy data if empty
-const matchCount = db.prepare("SELECT COUNT(*) as count FROM matches").get() as { count: number };
+/*const matchCount = db.prepare("SELECT COUNT(*) as count FROM matches").get() as { count: number };
 if (matchCount.count === 0) {
   const dummyMatches = [
     { p1: 'Mark', p2: 'Alex', date: '2025-10-15', st: '10:00', dur: 90, surface: 'Hard', season: 'Fall 2025', s1: '6,6', s2: '4,3', status: 'completed' },
@@ -57,17 +84,19 @@ if (matchCount.count === 0) {
     { p1: 'Mark', p2: 'David', date: '2026-02-27', st: '11:00', dur: 90, surface: 'Hard', season: 'Winter 2026', s1: null, s2: null, status: 'scheduled' },
   ];
 
-  const insertMatch = db.prepare("INSERT INTO matches (player1, player2, date, start_time, duration, surface, season, score1, score2, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-  dummyMatches.forEach(m => insertMatch.run(m.p1, m.p2, m.date, m.st, m.dur, m.surface, m.season, m.s1, m.s2, m.status));
+  const insertMatch = db.prepare("INSERT INTO matches (user_id, player1, player2, date, start_time, duration, surface, season, score1, score2, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+  dummyMatches.forEach(m => insertMatch.run('default', m.p1, m.p2, m.date, m.st, m.dur, m.surface, m.season, m.s1, m.s2, m.status));
   
-  const insertPlayer = db.prepare("INSERT OR IGNORE INTO players (name) VALUES (?)");
-  ['Alex', 'John', 'Sarah', 'Mike', 'David'].forEach(name => insertPlayer.run(name));
+  const insertPlayer = db.prepare("INSERT OR IGNORE INTO players (user_id, name) VALUES (?, ?)");
+  ['Alex', 'John', 'Sarah', 'Mike', 'David'].forEach(name => insertPlayer.run('default', name));
 
-  db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('user_name', 'Mark')").run();
-  db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('default_start_time', '10:00')").run();
-  db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('default_duration', '90')").run();
-  db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('surfaces', 'Clay,Grass,Hard,Carpet')").run();
+  db.prepare("INSERT OR IGNORE INTO settings (user_id, key, value) VALUES ('default', 'user_name', 'Mark')").run();
+  db.prepare("INSERT OR IGNORE INTO settings (user_id, key, value) VALUES ('default', 'default_start_time', '10:00')").run();
+  db.prepare("INSERT OR IGNORE INTO settings (user_id, key, value) VALUES ('default', 'default_duration', '90')").run();
+  db.prepare("INSERT OR IGNORE INTO settings (user_id, key, value) VALUES ('default', 'surfaces', 'Clay,Grass,Hard,Carpet')").run();
 }
+*/
+
 
 async function startServer() {
   console.log("Starting server...");
@@ -98,18 +127,28 @@ async function startServer() {
     );
   };
 
-  app.get("/api/init", async (req, res) => {
+  // Middleware to check authentication
+  const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (!req.session?.user_id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    next();
+  };
+
+  app.get("/api/init", requireAuth, async (req, res) => {
     try {
-      const matches = db.prepare("SELECT * FROM matches ORDER BY date DESC, start_time DESC").all();
-      const seasons = db.prepare("SELECT DISTINCT season FROM matches ORDER BY season DESC").all();
-      const settings = db.prepare("SELECT * FROM settings").all() as { key: string, value: string }[];
+      const userId = req.session!.user_id;
+      const matches = db.prepare("SELECT * FROM matches WHERE user_id = ? ORDER BY date DESC, start_time DESC").all(userId);
+      const seasons = db.prepare("SELECT DISTINCT season FROM matches WHERE user_id = ? ORDER BY season DESC").all(userId);
+      const settings = db.prepare("SELECT * FROM settings WHERE user_id = ?").all(userId) as { key: string, value: string }[];
       const players = db.prepare(`
         SELECT p.name, COUNT(m.id) as match_count 
         FROM players p 
-        LEFT JOIN matches m ON p.name = m.player2 
+        LEFT JOIN matches m ON p.name = m.player2 AND m.user_id = ?
+        WHERE p.user_id = ?
         GROUP BY p.name 
         ORDER BY match_count DESC, p.name ASC
-      `).all();
+      `).all(userId, userId);
 
       const settingsMap: Record<string, string> = {};
       settings.forEach(s => settingsMap[s.key] = s.value);
@@ -141,7 +180,11 @@ async function startServer() {
     const oauth2Client = getOAuthClient();
     const url = oauth2Client.generateAuthUrl({
       access_type: 'offline',
-      scope: ['https://www.googleapis.com/auth/calendar.events'],
+      scope: [
+        'https://www.googleapis.com/auth/calendar.events',
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile'
+      ],
       prompt: 'consent'
     });
     res.json({ url });
@@ -152,7 +195,29 @@ async function startServer() {
     const oauth2Client = getOAuthClient();
     try {
       const { tokens } = await oauth2Client.getToken(code as string);
+      oauth2Client.setCredentials(tokens);
+      
+      const oauth2 = google.oauth2({
+        auth: oauth2Client,
+        version: 'v2'
+      });
+      const userInfo = await oauth2.userinfo.get();
+      
       req.session!.tokens = tokens;
+      req.session!.user_id = userInfo.data.id || userInfo.data.email || 'default';
+      req.session!.user_email = userInfo.data.email;
+      req.session!.user_name = userInfo.data.name;
+
+      // Initialize default settings for new user if they don't exist
+      const userId = req.session!.user_id;
+      const hasSettings = db.prepare("SELECT 1 FROM settings WHERE user_id = ? LIMIT 1").get(userId);
+      if (!hasSettings) {
+        db.prepare("INSERT OR IGNORE INTO settings (user_id, key, value) VALUES (?, 'user_name', ?)").run(userId, userInfo.data.given_name || 'Player');
+        db.prepare("INSERT OR IGNORE INTO settings (user_id, key, value) VALUES (?, 'default_start_time', '10:00')").run(userId);
+        db.prepare("INSERT OR IGNORE INTO settings (user_id, key, value) VALUES (?, 'default_duration', '90')").run(userId);
+        db.prepare("INSERT OR IGNORE INTO settings (user_id, key, value) VALUES (?, 'surfaces', 'Clay,Grass,Hard,Carpet')").run(userId);
+      }
+
       res.send(`
         <html>
           <body>
@@ -175,10 +240,22 @@ async function startServer() {
   });
 
   app.get("/api/auth/google/status", (req, res) => {
-    res.json({ connected: !!req.session?.tokens });
+    res.json({ 
+      connected: !!req.session?.tokens,
+      user: req.session?.user_id ? {
+        id: req.session.user_id,
+        email: req.session.user_email,
+        name: req.session.user_name
+      } : null
+    });
   });
 
-  app.post("/api/calendar/event", async (req, res) => {
+  app.post("/api/auth/logout", (req, res) => {
+    req.session = null;
+    res.json({ success: true });
+  });
+
+  app.post("/api/calendar/event", requireAuth, async (req, res) => {
     if (!req.session?.tokens) {
       return res.status(401).json({ error: "Not connected to Google Calendar" });
     }
@@ -208,8 +285,9 @@ async function startServer() {
     }
   });
 
-  app.get("/api/settings", (req, res) => {
-    const settings = db.prepare("SELECT * FROM settings").all() as { key: string, value: string }[];
+  app.get("/api/settings", requireAuth, (req, res) => {
+    const userId = req.session!.user_id;
+    const settings = db.prepare("SELECT * FROM settings WHERE user_id = ?").all(userId) as { key: string, value: string }[];
     const result: Record<string, string> = {};
     settings.forEach(s => result[s.key] = s.value);
     res.json({
@@ -252,59 +330,73 @@ async function startServer() {
     }
   });
 
-  app.delete("/api/players/:name", (req, res) => {
+  app.delete("/api/players/:name", requireAuth, (req, res) => {
+    const userId = req.session!.user_id;
     const { name } = req.params;
-    db.prepare("DELETE FROM players WHERE name = ?").run(name);
+    db.prepare("DELETE FROM players WHERE user_id = ? AND name = ?").run(userId, name);
     res.json({ success: true });
   });
 
-  app.get("/api/matches", (req, res) => {
-    const matches = db.prepare("SELECT * FROM matches ORDER BY date DESC, start_time DESC").all();
+  app.get("/api/matches", requireAuth, (req, res) => {
+    const userId = req.session!.user_id;
+    const matches = db.prepare("SELECT * FROM matches WHERE user_id = ? ORDER BY date DESC, start_time DESC").all(userId);
     res.json(matches);
   });
 
-  app.post("/api/matches", (req, res) => {
+  app.post("/api/matches", requireAuth, (req, res) => {
+    const userId = req.session!.user_id;
     const { player1, player2, date, startTime, duration, surface, season } = req.body;
     
     // Save player2 if not exists
-    db.prepare("INSERT OR IGNORE INTO players (name) VALUES (?)").run(player2);
+    db.prepare("INSERT OR IGNORE INTO players (user_id, name) VALUES (?, ?)").run(userId, player2);
 
     const info = db.prepare(
-      "INSERT INTO matches (player1, player2, date, start_time, duration, surface, season, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'scheduled')"
-    ).run(player1, player2, date, startTime, duration, surface, season);
+      "INSERT INTO matches (user_id, player1, player2, date, start_time, duration, surface, season, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'scheduled')"
+    ).run(userId, player1, player2, date, startTime, duration, surface, season);
     res.json({ id: info.lastInsertRowid });
   });
 
-  app.put("/api/matches/:id", (req, res) => {
+  app.put("/api/matches/:id", requireAuth, (req, res) => {
+    const userId = req.session!.user_id;
     const { id } = req.params;
     const { player1, player2, date, start_time, duration, surface, season, score1, score2, status } = req.body;
     
     db.prepare(`
       UPDATE matches 
       SET player1 = ?, player2 = ?, date = ?, start_time = ?, duration = ?, surface = ?, season = ?, score1 = ?, score2 = ?, status = ? 
-      WHERE id = ?
-    `).run(player1, player2, date, start_time, duration, surface, season, score1, score2, status, id);
+      WHERE id = ? AND user_id = ?
+    `).run(player1, player2, date, start_time, duration, surface, season, score1, score2, status, id, userId);
     
     res.json({ success: true });
   });
 
-  app.put("/api/matches/:id/score", (req, res) => {
+  app.put("/api/matches/:id/score", requireAuth, (req, res) => {
+    const userId = req.session!.user_id;
     const { id } = req.params;
     const { score1, score2 } = req.body; // Expecting strings like "6,6"
     db.prepare(
-      "UPDATE matches SET score1 = ?, score2 = ?, status = 'completed' WHERE id = ?"
-    ).run(score1, score2, id);
+      "UPDATE matches SET score1 = ?, score2 = ?, status = 'completed' WHERE id = ? AND user_id = ?"
+    ).run(score1, score2, id, userId);
     res.json({ success: true });
   });
 
-  app.get("/api/seasons", (req, res) => {
-    const seasons = db.prepare("SELECT DISTINCT season FROM matches ORDER BY season DESC").all();
+  app.delete("/api/matches/:id", requireAuth, (req, res) => {
+    const userId = req.session!.user_id;
+    const { id } = req.params;
+    db.prepare("DELETE FROM matches WHERE id = ? AND user_id = ?").run(id, userId);
+    res.json({ success: true });
+  });
+
+  app.get("/api/seasons", requireAuth, (req, res) => {
+    const userId = req.session!.user_id;
+    const seasons = db.prepare("SELECT DISTINCT season FROM matches WHERE user_id = ? ORDER BY season DESC").all(userId);
     res.json(seasons.map((s: any) => s.season));
   });
 
-  app.get("/api/stats", (req, res) => {
-    const totalGames = db.prepare("SELECT COUNT(*) as count FROM matches WHERE status = 'completed'").get();
-    const matches = db.prepare("SELECT * FROM matches WHERE status = 'completed'").all();
+  app.get("/api/stats", requireAuth, (req, res) => {
+    const userId = req.session!.user_id;
+    const totalGames = db.prepare("SELECT COUNT(*) as count FROM matches WHERE status = 'completed' AND user_id = ?").get(userId);
+    const matches = db.prepare("SELECT * FROM matches WHERE status = 'completed' AND user_id = ?").all(userId);
     res.json({ totalGames: totalGames.count, matches });
   });
 
