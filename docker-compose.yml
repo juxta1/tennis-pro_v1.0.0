@@ -6,14 +6,14 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "5555:3000"
     environment:
       - NODE_ENV=production
       - PORT=3000
       - DB_PATH=/app/data/tennis_league.db
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - APP_URL=${APP_URL:-http://localhost:3000}
+      - APP_URL=${APP_URL:-http://localhost:5555}
     volumes:
       - tennis_data:/app/data
     restart: unless-stopped
