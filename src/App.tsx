@@ -45,36 +45,36 @@ const renderMatchCard = (match: Match, onClick?: () => void) => {
     <div 
       key={match.id} 
       onClick={onClick}
-      className={`bg-white p-4 rounded-2xl border border-stone-200 shadow-sm transition-all ${onClick ? 'cursor-pointer hover:border-emerald-500 active:scale-[0.98]' : ''}`}
+      className={`bg-white p-4 rounded-none border-2 border-black  transition-all ${onClick ? 'cursor-pointer hover:border-red-500 active:scale-[0.98]' : ''}`}
     >
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400 bg-stone-50 px-2 py-0.5 rounded border border-stone-100">
+          <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 bg-white px-2 py-0.5 rounded border-2 border-black">
             {match.surface}
           </span>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+          <span className="text-[10px] font-black uppercase tracking-widest text-red-600 bg-gray-100 px-2 py-0.5 rounded border-2 border-black">
             {match.season}
           </span>
         </div>
-        <span className="text-xs text-stone-400 font-medium">{match.date}</span>
+        <span className="text-xs text-gray-500 font-medium">{match.date}</span>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-2 flex-1">
           <div className="flex items-center justify-between">
-            <span className={`font-semibold ${sets1 > sets2 ? 'text-emerald-600' : 'text-stone-700'}`}>{match.player1}</span>
+            <span className={`font-semibold ${sets1 > sets2 ? 'text-red-600' : 'text-gray-700'}`}>{match.player1}</span>
             <div className="flex gap-1">
               {s1.map((score, i) => (
-                <span key={i} className={`font-mono font-bold text-sm w-6 text-center rounded ${parseInt(s1[i]) > parseInt(s2[i]) ? 'bg-emerald-50 text-emerald-700' : 'text-stone-400'}`}>
+                <span key={i} className={`font-mono font-black text-sm w-6 text-center rounded ${parseInt(s1[i]) > parseInt(s2[i]) ? 'bg-gray-100 text-red-700' : 'text-gray-500'}`}>
                   {score}
                 </span>
               ))}
             </div>
           </div>
           <div className="flex items-center justify-between">
-            <span className={`font-semibold ${sets2 > sets1 ? 'text-emerald-600' : 'text-stone-700'}`}>{match.player2}</span>
+            <span className={`font-semibold ${sets2 > sets1 ? 'text-red-600' : 'text-gray-700'}`}>{match.player2}</span>
             <div className="flex gap-1">
               {s2.map((score, i) => (
-                <span key={i} className={`font-mono font-bold text-sm w-6 text-center rounded ${parseInt(s2[i]) > parseInt(s1[i]) ? 'bg-emerald-50 text-emerald-700' : 'text-stone-400'}`}>
+                <span key={i} className={`font-mono font-black text-sm w-6 text-center rounded ${parseInt(s2[i]) > parseInt(s1[i]) ? 'bg-gray-100 text-red-700' : 'text-gray-500'}`}>
                   {score}
                 </span>
               ))}
@@ -83,11 +83,11 @@ const renderMatchCard = (match: Match, onClick?: () => void) => {
         </div>
       </div>
       {match.status === 'completed' && (
-        <div className="mt-3 pt-3 border-t border-stone-50 flex justify-between items-center">
-          <div className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
+        <div className="mt-3 pt-3 border-t border-gray-50 flex justify-between items-center">
+          <div className="text-[10px] text-gray-500 font-black uppercase tracking-widest">
             Games: {games1} - {games2}
           </div>
-          <div className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+          <div className="text-[10px] font-black text-red-600 bg-gray-100 px-2 py-0.5 rounded">
             {winPercentage}% Win
           </div>
         </div>
@@ -420,29 +420,29 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-600"></div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 font-sans pb-24">
+    <div className="min-h-screen bg-white text-black font-sans pb-24">
       {/* Header */}
-      <header className="bg-white border-b border-stone-200 sticky top-0 z-10 px-4 py-4">
+      <header className="bg-white border-b border-black sticky top-0 z-10 px-4 py-4">
         <div className="max-w-md mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="bg-emerald-600 p-2 rounded-lg">
+            <div className="bg-red-600 p-2 rounded-none">
               <Trophy className="text-white w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-tight leading-none">Tennis Pro</h1>
-              <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest mt-1">{userName || 'Guest'}</p>
+              <h1 className="text-lg font-black tracking-tighter leading-none">Tennis Pro</h1>
+              <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mt-1">{userName || 'Guest'}</p>
             </div>
           </div>
           <button 
             onClick={() => setView('setup')}
-            className="p-2 text-stone-400 hover:text-emerald-600 transition-colors"
+            className="p-2 text-gray-500 hover:text-red-600 transition-colors"
           >
             <Settings className="w-5 h-5" />
           </button>
@@ -461,19 +461,19 @@ export default function App() {
             >
               {/* Stats Overview */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm">
-                  <p className="text-stone-400 text-[10px] font-black uppercase tracking-widest mb-2">Win Percentage</p>
+                <div className="bg-white p-5 rounded-none border-2 border-black ">
+                  <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">Win Percentage</p>
                   <div className="flex items-baseline gap-2">
-                    <p className="text-3xl font-black text-emerald-600">{winPercentage}%</p>
-                    <p className="text-xs text-stone-400 font-bold">Games</p>
+                    <p className="text-3xl font-black text-red-600">{winPercentage}%</p>
+                    <p className="text-xs text-gray-500 font-black">Games</p>
                   </div>
-                  <div className="mt-2 h-1.5 w-full bg-stone-100 rounded-full overflow-hidden flex">
+                  <div className="mt-2 h-1.5 w-full bg-gray-100 rounded-full overflow-hidden flex">
                     <div 
-                      className="h-full bg-emerald-500" 
+                      className="h-full bg-red-500" 
                       style={{ width: `${winPercentage}%` }}
                     />
                   </div>
-                  <div className="mt-4 pt-4 border-t border-stone-50 space-y-2">
+                  <div className="mt-4 pt-4 border-t border-gray-50 space-y-2">
                     {surfaces
                       .map(s => {
                         const sMatches = completedMatches.filter(m => m.surface === s);
@@ -493,24 +493,24 @@ export default function App() {
                       .map(({ surface, winRate, matchCount }) => (
                         <div key={surface} className="flex justify-between items-center">
                           <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-bold text-stone-400 uppercase">{surface}</span>
-                            {matchCount > 0 && <span className="text-[8px] text-stone-300 font-medium">({matchCount} matches)</span>}
+                            <span className="text-[9px] font-black text-gray-500 uppercase">{surface}</span>
+                            {matchCount > 0 && <span className="text-[8px] text-gray-300 font-medium">({matchCount} matches)</span>}
                           </div>
-                          <span className="text-[9px] font-black text-emerald-600">{winRate}% Games</span>
+                          <span className="text-[9px] font-black text-red-600">{winRate}% Games</span>
                         </div>
                       ))}
                   </div>
                 </div>
-                <div className="bg-stone-900 p-5 rounded-3xl shadow-xl text-white">
-                  <p className="text-stone-500 text-[10px] font-black uppercase tracking-widest mb-2">Matches</p>
+                <div className="bg-gray-900 p-5 rounded-none  text-white">
+                  <p className="text-gray-600 text-[10px] font-black uppercase tracking-widest mb-2">Matches</p>
                   <div className="flex justify-between items-end">
                     <div>
                       <p className="text-3xl font-black">{completedMatches.length}</p>
-                      <p className="text-[10px] text-stone-500 font-bold uppercase">Played</p>
+                      <p className="text-[10px] text-gray-600 font-black uppercase">Played</p>
                     </div>
                     <div className="text-right">
                       <p className="text-xl font-black text-emerald-400">{upcomingMatches.length}</p>
-                      <p className="text-[10px] text-stone-500 font-bold uppercase">Next</p>
+                      <p className="text-[10px] text-gray-600 font-black uppercase">Next</p>
                     </div>
                   </div>
                 </div>
@@ -519,8 +519,8 @@ export default function App() {
               {/* Next Matches */}
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-emerald-600" />
+                  <h2 className="text-lg font-black flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-red-600" />
                     Next Matches
                   </h2>
                 </div>
@@ -528,64 +528,64 @@ export default function App() {
                   {upcomingMatches.map(match => (
                     <div 
                       key={match.id} 
-                      className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between hover:border-emerald-500 transition-all cursor-pointer group"
+                      className="bg-white p-4 rounded-none border-2 border-black  flex items-center justify-between hover:border-red-500 transition-all cursor-pointer group"
                       onClick={() => setShowEditModal(match)}
                     >
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-[10px] font-bold uppercase text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] font-black uppercase text-red-600 bg-gray-100 px-1.5 py-0.5 rounded">
                             {match.surface}
                           </span>
-                          <span className="text-[10px] font-bold uppercase text-stone-400 bg-stone-50 px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] font-black uppercase text-gray-500 bg-white px-1.5 py-0.5 rounded">
                             {match.season}
                           </span>
                         </div>
-                        <div className="font-bold text-stone-800">
-                          {match.player1} <span className="text-stone-300 font-normal mx-1">vs</span> {match.player2}
+                        <div className="font-black text-black">
+                          {match.player1} <span className="text-gray-300 font-normal mx-1">vs</span> {match.player2}
                         </div>
                         <div className="mt-2 space-y-2">
-                          <p className="text-[8px] font-black text-stone-400 uppercase tracking-[0.15em]">H2H Records vs {match.player2}</p>
+                          <p className="text-[8px] font-black text-gray-500 uppercase tracking-[0.15em]">H2H Records vs {match.player2}</p>
                           <div className="grid grid-cols-1 gap-1.5">
                             {surfaces
                               .map(s => ({ surface: s, stats: calculateH2HStats(match.player2, s) }))
                               .sort((a, b) => (b.stats?.totalMatches || 0) - (a.stats?.totalMatches || 0))
                               .map(({ surface, stats }) => (
-                                <div key={surface} className="flex flex-col gap-1 bg-stone-50/50 p-2 rounded-xl border border-stone-100">
+                                <div key={surface} className="flex flex-col gap-1 bg-white/50 p-2 rounded-none border-2 border-black">
                                   <div className="flex justify-between items-center">
-                                    <span className={`text-[9px] font-bold uppercase ${surface === match.surface ? 'text-emerald-600' : 'text-stone-400'}`}>
+                                    <span className={`text-[9px] font-black uppercase ${surface === match.surface ? 'text-red-600' : 'text-gray-500'}`}>
                                       {surface} {surface === match.surface && '•'}
                                     </span>
-                                    <span className="text-[9px] font-black text-emerald-600">{stats?.percentage || '0'}% Games</span>
+                                    <span className="text-[9px] font-black text-red-600">{stats?.percentage || '0'}% Games</span>
                                   </div>
                                   <div className="flex items-center gap-2">
-                                    <div className="flex-1 h-1 bg-stone-100 rounded-full overflow-hidden">
+                                    <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">
                                       <div 
-                                        className="h-full bg-emerald-500" 
+                                        className="h-full bg-red-500" 
                                         style={{ width: `${stats?.percentage || 0}%` }}
                                       />
                                     </div>
-                                    <div className="text-[8px] font-bold text-stone-400 whitespace-nowrap">
-                                      {stats?.gamesWon || 0}W - {stats?.gamesLost || 0}L <span className="text-stone-300">({stats?.totalMatches || 0}m)</span>
+                                    <div className="text-[8px] font-black text-gray-500 whitespace-nowrap">
+                                      {stats?.gamesWon || 0}W - {stats?.gamesLost || 0}L <span className="text-gray-300">({stats?.totalMatches || 0}m)</span>
                                     </div>
                                   </div>
                                 </div>
                               ))}
                           </div>
                         </div>
-                        <div className="text-[10px] text-stone-400 font-bold uppercase mt-1 flex items-center gap-1">
+                        <div className="text-[10px] text-gray-500 font-black uppercase mt-1 flex items-center gap-1">
                           <Clock className="w-3 h-3" /> {match.date} {match.start_time && `• ${match.start_time} - ${calculateEndTime(match.start_time, match.duration || 0)}`}
                         </div>
                       </div>
                       <div className="flex flex-col gap-2 ml-4" onClick={(e) => e.stopPropagation()}>
                         <button 
                           onClick={() => setShowScoreModal(match)}
-                          className="bg-emerald-600 text-white text-[10px] font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 transition-all active:scale-95 whitespace-nowrap"
+                          className="bg-red-600 text-white text-[10px] font-black px-4 py-2.5 rounded-none   hover:bg-red-700 transition-all active:scale-95 whitespace-nowrap"
                         >
                           Score
                         </button>
                         <button 
                           onClick={() => setShowEditModal(match)}
-                          className="bg-stone-100 text-stone-600 text-[10px] font-bold px-4 py-2.5 rounded-xl hover:bg-stone-200 transition-all active:scale-95 whitespace-nowrap"
+                          className="bg-gray-100 text-gray-600 text-[10px] font-black px-4 py-2.5 rounded-none hover:bg-gray-200 transition-all active:scale-95 whitespace-nowrap"
                         >
                           Edit
                         </button>
@@ -593,7 +593,7 @@ export default function App() {
                     </div>
                   ))}
                   {upcomingMatches.length === 0 && (
-                    <div className="text-center py-10 bg-white rounded-3xl border border-dashed border-stone-200 text-stone-400 italic text-sm">
+                    <div className="text-center py-10 bg-white rounded-none border border-dotted border-black text-gray-500 italic text-sm">
                       No matches scheduled
                     </div>
                   )}
@@ -603,11 +603,11 @@ export default function App() {
               {/* Recent History */}
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold flex items-center gap-2">
-                    <History className="w-5 h-5 text-emerald-600" />
+                  <h2 className="text-lg font-black flex items-center gap-2">
+                    <History className="w-5 h-5 text-red-600" />
                     Recent Results
                   </h2>
-                  <button onClick={() => setView('history')} className="text-xs font-bold text-emerald-600 uppercase tracking-wider">View All</button>
+                  <button onClick={() => setView('history')} className="text-xs font-black text-red-600 uppercase tracking-wider">View All</button>
                 </div>
                 <div className="space-y-3">
                   {completedMatches.slice(0, 3).map(match => renderMatchCard(match))}
@@ -624,17 +624,17 @@ export default function App() {
               exit={{ opacity: 0, x: -20 }}
               className="space-y-6"
             >
-              <h2 className="text-2xl font-black tracking-tight">New Match</h2>
+              <h2 className="text-2xl font-black tracking-tighter">New Match</h2>
               <form onSubmit={handleAddMatch} className="space-y-5">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Opponent Name</label>
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Opponent Name</label>
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-300" />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
                     <input 
                       name="player2" 
                       required 
                       list="players-list"
-                      className="w-full bg-white border border-stone-200 rounded-2xl pl-11 pr-4 py-4 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold"
+                      className="w-full bg-white border-2 border-black rounded-none pl-11 pr-4 py-4 focus:ring-2 focus:ring-red-500 outline-none transition-all font-black"
                       placeholder="Who are you playing?"
                     />
                     <datalist id="players-list">
@@ -645,43 +645,43 @@ export default function App() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Date</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Date</label>
                     <input 
                       type="date" 
                       name="date" 
                       defaultValue={today}
                       required 
-                      className="w-full bg-white border border-stone-200 rounded-2xl px-4 py-4 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold"
+                      className="w-full bg-white border-2 border-black rounded-none px-4 py-4 focus:ring-2 focus:ring-red-500 outline-none transition-all font-black"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Start Time</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Start Time</label>
                     <input 
                       type="time" 
                       name="startTime" 
                       defaultValue={defaultStartTime}
                       required 
-                      className="w-full bg-white border border-stone-200 rounded-2xl px-4 py-4 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold"
+                      className="w-full bg-white border-2 border-black rounded-none px-4 py-4 focus:ring-2 focus:ring-red-500 outline-none transition-all font-black"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Duration (min)</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Duration (min)</label>
                     <input 
                       type="number" 
                       name="duration" 
                       defaultValue={defaultDuration}
                       required 
-                      className="w-full bg-white border border-stone-200 rounded-2xl px-4 py-4 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold"
+                      className="w-full bg-white border-2 border-black rounded-none px-4 py-4 focus:ring-2 focus:ring-red-500 outline-none transition-all font-black"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Surface</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Surface</label>
                     <select 
                       name="surface" 
-                      className="w-full bg-white border border-stone-200 rounded-2xl px-4 py-4 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold appearance-none"
+                      className="w-full bg-white border-2 border-black rounded-none px-4 py-4 focus:ring-2 focus:ring-red-500 outline-none transition-all font-black appearance-none"
                     >
                       {surfaces.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
@@ -689,20 +689,20 @@ export default function App() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Season</label>
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Season</label>
                   <div className="flex gap-2">
                     {!showNewSeasonInput ? (
                       <>
                         <select 
                           name="season" 
-                          className="flex-1 bg-white border border-stone-200 rounded-2xl px-4 py-4 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold appearance-none"
+                          className="flex-1 bg-white border-2 border-black rounded-none px-4 py-4 focus:ring-2 focus:ring-red-500 outline-none transition-all font-black appearance-none"
                         >
                           {seasons.map(s => <option key={s} value={s}>{s}</option>)}
                         </select>
                         <button 
                           type="button"
                           onClick={() => setShowNewSeasonInput(true)}
-                          className="p-4 bg-stone-100 text-stone-500 rounded-2xl hover:bg-stone-200 transition-colors"
+                          className="p-4 bg-gray-100 text-gray-600 rounded-none hover:bg-gray-200 transition-colors"
                         >
                           <Plus className="w-6 h-6" />
                         </button>
@@ -712,14 +712,14 @@ export default function App() {
                         <input 
                           value={newSeasonName}
                           onChange={(e) => setNewSeasonName(e.target.value)}
-                          className="flex-1 bg-white border border-stone-200 rounded-2xl px-4 py-4 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-bold"
+                          className="flex-1 bg-white border-2 border-black rounded-none px-4 py-4 focus:ring-2 focus:ring-red-500 outline-none transition-all font-black"
                           placeholder="e.g. Summer 2026"
                           autoFocus
                         />
                         <button 
                           type="button"
                           onClick={() => setShowNewSeasonInput(false)}
-                          className="p-4 bg-stone-100 text-stone-500 rounded-2xl hover:bg-stone-200 transition-colors"
+                          className="p-4 bg-gray-100 text-gray-600 rounded-none hover:bg-gray-200 transition-colors"
                         >
                           Cancel
                         </button>
@@ -729,15 +729,15 @@ export default function App() {
                 </div>
 
                 {googleConnected && (
-                  <div className="flex items-center gap-3 bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                  <div className="flex items-center gap-3 bg-gray-100 p-4 rounded-none border-2 border-black">
                     <input 
                       type="checkbox" 
                       id="addToCalendar"
                       checked={addToCalendar}
                       onChange={(e) => setAddToCalendar(e.target.checked)}
-                      className="w-5 h-5 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-black text-red-600 focus:ring-red-500"
                     />
-                    <label htmlFor="addToCalendar" className="text-sm font-bold text-emerald-800 flex items-center gap-2">
+                    <label htmlFor="addToCalendar" className="text-sm font-black text-emerald-800 flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
                       Add to Google Calendar
                     </label>
@@ -746,7 +746,7 @@ export default function App() {
 
                 <button 
                   type="submit" 
-                  className="w-full bg-emerald-600 text-white font-black py-5 rounded-3xl shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all active:scale-[0.98] mt-4"
+                  className="w-full bg-red-600 text-white font-black py-5 rounded-none   hover:bg-red-700 transition-all active:scale-[0.98] mt-4"
                 >
                   Schedule Match
                 </button>
@@ -762,7 +762,7 @@ export default function App() {
               exit={{ opacity: 0, x: -20 }}
               className="space-y-8"
             >
-              <h2 className="text-2xl font-black tracking-tight">League History</h2>
+              <h2 className="text-2xl font-black tracking-tighter">League History</h2>
               
               {seasons.map(season => {
                 const seasonMatches = completedMatches.filter(m => m.season === season);
@@ -770,8 +770,8 @@ export default function App() {
                 return (
                   <div key={season} className="space-y-4">
                     <div className="flex items-center gap-4">
-                      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-stone-400 whitespace-nowrap">{season}</h3>
-                      <div className="h-px w-full bg-stone-200" />
+                      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">{season}</h3>
+                      <div className="h-px w-full bg-gray-200" />
                     </div>
                     <div className="space-y-3">
                       {seasonMatches.map(match => renderMatchCard(match, () => setShowEditModal(match)))}
@@ -781,7 +781,7 @@ export default function App() {
               })}
 
               {completedMatches.length === 0 && (
-                <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-stone-200 text-stone-400 italic text-sm">
+                <div className="text-center py-20 bg-white rounded-none border border-dotted border-black text-gray-500 italic text-sm">
                   No match history found
                 </div>
               )}
@@ -796,70 +796,70 @@ export default function App() {
               className="space-y-8 py-10"
             >
               <div className="text-center space-y-2">
-                <div className="w-20 h-20 bg-emerald-600 rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-emerald-600/20 mb-6">
+                <div className="w-20 h-20 bg-red-600 rounded-none flex items-center justify-center mx-auto   mb-6">
                   <User className="text-white w-10 h-10" />
                 </div>
-                <h2 className="text-3xl font-black tracking-tight">Player Profile</h2>
-                <p className="text-stone-400 font-medium">Enter your name to personalize the app</p>
+                <h2 className="text-3xl font-black tracking-tighter">Player Profile</h2>
+                <p className="text-gray-500 font-medium">Enter your name to personalize the app</p>
               </div>
 
               <form onSubmit={handleSaveSettings} className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Your Full Name</label>
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Your Full Name</label>
                   <input 
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                     required 
-                    className="w-full bg-white border border-stone-200 rounded-3xl px-6 py-5 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-bold text-lg"
+                    className="w-full bg-white border-2 border-black rounded-none px-6 py-5 focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-black text-lg"
                     placeholder="e.g. Mark Henry"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Default Start Time</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Default Start Time</label>
                     <input 
                       type="time"
                       value={defaultStartTime}
                       onChange={(e) => setDefaultStartTime(e.target.value)}
                       required 
-                      className="w-full bg-white border border-stone-200 rounded-3xl px-6 py-5 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-bold"
+                      className="w-full bg-white border-2 border-black rounded-none px-6 py-5 focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-black"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Default Duration (min)</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Default Duration (min)</label>
                     <input 
                       type="number"
                       value={defaultDuration}
                       onChange={(e) => setDefaultDuration(e.target.value)}
                       required 
-                      className="w-full bg-white border border-stone-200 rounded-3xl px-6 py-5 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-bold"
+                      className="w-full bg-white border-2 border-black rounded-none px-6 py-5 focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-black"
                     />
                   </div>
                 </div>
 
                 {/* Google Calendar Integration */}
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Integrations</label>
-                  <div className="bg-white border border-stone-200 rounded-3xl p-6 flex items-center justify-between">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Integrations</label>
+                  <div className="bg-white border-2 border-black rounded-none p-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className={`p-3 rounded-2xl ${googleConnected ? 'bg-emerald-50 text-emerald-600' : 'bg-stone-50 text-stone-400'}`}>
+                      <div className={`p-3 rounded-none ${googleConnected ? 'bg-gray-100 text-red-600' : 'bg-white text-gray-500'}`}>
                         <Calendar className="w-6 h-6" />
                       </div>
                       <div>
-                        <p className="font-bold text-stone-800">Google Calendar</p>
-                        <p className="text-xs text-stone-400">{googleConnected ? 'Connected' : 'Not connected'}</p>
+                        <p className="font-black text-black">Google Calendar</p>
+                        <p className="text-xs text-gray-500">{googleConnected ? 'Connected' : 'Not connected'}</p>
                       </div>
                     </div>
                     {!googleConnected ? (
                       <button 
                         type="button"
                         onClick={handleConnectGoogle}
-                        className="bg-stone-900 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-black transition-all"
+                        className="bg-gray-900 text-white text-xs font-black px-4 py-2 rounded-none hover:bg-black transition-all"
                       >
                         Connect
                       </button>
                     ) : (
-                      <div className="flex items-center gap-2 text-emerald-600">
+                      <div className="flex items-center gap-2 text-red-600">
                         <CheckCircle2 className="w-5 h-5" />
                       </div>
                     )}
@@ -868,12 +868,12 @@ export default function App() {
 
                 {/* Player Management */}
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Manage Opponents</label>
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Manage Opponents</label>
                   <div className="space-y-2">
                     <div className="flex gap-2">
                       <input 
                         id="new-player-input"
-                        className="flex-1 bg-white border border-stone-200 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none font-bold"
+                        className="flex-1 bg-white border-2 border-black rounded-none px-4 py-3 focus:ring-2 focus:ring-red-500 outline-none font-black"
                         placeholder="New opponent name..."
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
@@ -890,19 +890,19 @@ export default function App() {
                           handleAddPlayer(input.value);
                           input.value = '';
                         }}
-                        className="p-3 bg-emerald-600 text-white rounded-2xl hover:bg-emerald-700 transition-colors"
+                        className="p-3 bg-red-600 text-white rounded-none hover:bg-red-700 transition-colors"
                       >
                         <Plus className="w-5 h-5" />
                       </button>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {players.map(p => (
-                        <div key={p} className="bg-white border border-stone-200 rounded-full px-3 py-1 flex items-center gap-2">
-                          <span className="text-xs font-bold text-stone-600">{p}</span>
+                        <div key={p} className="bg-white border-2 border-black rounded-full px-3 py-1 flex items-center gap-2">
+                          <span className="text-xs font-black text-gray-600">{p}</span>
                           <button 
                             type="button"
                             onClick={() => handleDeletePlayer(p)}
-                            className="text-stone-300 hover:text-red-500 transition-colors"
+                            className="text-gray-300 hover:text-red-500 transition-colors"
                           >
                             <Plus className="w-3 h-3 rotate-45" />
                           </button>
@@ -914,12 +914,12 @@ export default function App() {
 
                 {/* Surface Management */}
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Manage Surfaces</label>
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Manage Surfaces</label>
                   <div className="space-y-2">
                     <div className="flex gap-2">
                       <input 
                         id="new-surface-input"
-                        className="flex-1 bg-white border border-stone-200 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none font-bold"
+                        className="flex-1 bg-white border-2 border-black rounded-none px-4 py-3 focus:ring-2 focus:ring-red-500 outline-none font-black"
                         placeholder="New surface type..."
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
@@ -936,19 +936,19 @@ export default function App() {
                           handleAddSurface(input.value);
                           input.value = '';
                         }}
-                        className="p-3 bg-emerald-600 text-white rounded-2xl hover:bg-emerald-700 transition-colors"
+                        className="p-3 bg-red-600 text-white rounded-none hover:bg-red-700 transition-colors"
                       >
                         <Plus className="w-5 h-5" />
                       </button>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {surfaces.map(s => (
-                        <div key={s} className="bg-white border border-stone-200 rounded-full px-3 py-1 flex items-center gap-2">
-                          <span className="text-xs font-bold text-stone-600">{s}</span>
+                        <div key={s} className="bg-white border-2 border-black rounded-full px-3 py-1 flex items-center gap-2">
+                          <span className="text-xs font-black text-gray-600">{s}</span>
                           <button 
                             type="button"
                             onClick={() => handleDeleteSurface(s)}
-                            className="text-stone-300 hover:text-red-500 transition-colors"
+                            className="text-gray-300 hover:text-red-500 transition-colors"
                           >
                             <Plus className="w-3 h-3 rotate-45" />
                           </button>
@@ -960,7 +960,7 @@ export default function App() {
 
                 <button 
                   type="submit" 
-                  className="w-full bg-stone-900 text-white font-black py-5 rounded-3xl shadow-xl hover:bg-black transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                  className="w-full bg-gray-900 text-white font-black py-5 rounded-none  hover:bg-black transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                   <CheckCircle2 className="w-5 h-5" />
                   Save Settings
@@ -973,13 +973,13 @@ export default function App() {
 
       {/* Edit Match Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/80 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-md">
           <motion.div 
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            className="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white w-full max-w-md rounded-none p-8  max-h-[90vh] overflow-y-auto"
           >
-            <h3 className="text-2xl font-black mb-6 text-center tracking-tight">Edit Match</h3>
+            <h3 className="text-2xl font-black mb-6 text-center tracking-tighter">Edit Match</h3>
             
             <form onSubmit={(e) => {
               e.preventDefault();
@@ -998,54 +998,54 @@ export default function App() {
               });
             }} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Opponent</label>
-                <input name="player2" defaultValue={showEditModal.player2} required className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold" />
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Opponent</label>
+                <input name="player2" defaultValue={showEditModal.player2} required className="w-full bg-white border-2 border-black rounded-none px-4 py-3 font-black" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Date</label>
-                  <input type="date" name="date" defaultValue={showEditModal.date} required className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold" />
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Date</label>
+                  <input type="date" name="date" defaultValue={showEditModal.date} required className="w-full bg-white border-2 border-black rounded-none px-4 py-3 font-black" />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Time</label>
-                  <input type="time" name="startTime" defaultValue={showEditModal.start_time || ''} className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold" />
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Time</label>
+                  <input type="time" name="startTime" defaultValue={showEditModal.start_time || ''} className="w-full bg-white border-2 border-black rounded-none px-4 py-3 font-black" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Duration</label>
-                  <input type="number" name="duration" defaultValue={showEditModal.duration || 0} className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold" />
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Duration</label>
+                  <input type="number" name="duration" defaultValue={showEditModal.duration || 0} className="w-full bg-white border-2 border-black rounded-none px-4 py-3 font-black" />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Surface</label>
-                  <select name="surface" defaultValue={showEditModal.surface} className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Surface</label>
+                  <select name="surface" defaultValue={showEditModal.surface} className="w-full bg-white border-2 border-black rounded-none px-4 py-3 font-black">
                     {surfaces.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Season</label>
-                  <input name="season" defaultValue={showEditModal.season} required className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold" />
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Season</label>
+                  <input name="season" defaultValue={showEditModal.season} required className="w-full bg-white border-2 border-black rounded-none px-4 py-3 font-black" />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Status</label>
-                  <select name="status" defaultValue={showEditModal.status} className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Status</label>
+                  <select name="status" defaultValue={showEditModal.status} className="w-full bg-white border-2 border-black rounded-none px-4 py-3 font-black">
                     <option value="scheduled">Scheduled</option>
                     <option value="completed">Completed</option>
                   </select>
                 </div>
               </div>
               
-              <div className="space-y-4 pt-4 border-t border-stone-100">
-                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Scores per Set</label>
+              <div className="space-y-4 pt-4 border-t border-black">
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Scores per Set</label>
                 <div className="grid grid-cols-[1fr_auto_auto_auto] gap-3 items-center">
-                  <div className="font-bold text-stone-400 text-[9px] uppercase tracking-widest">Player</div>
-                  <div className="text-center font-bold text-stone-400 text-[9px] uppercase w-10">Set 1</div>
-                  <div className="text-center font-bold text-stone-400 text-[9px] uppercase w-10">Set 2</div>
-                  <div className="text-center font-bold text-stone-400 text-[9px] uppercase w-10">Set 3</div>
+                  <div className="font-black text-gray-500 text-[9px] uppercase tracking-widest">Player</div>
+                  <div className="text-center font-black text-gray-500 text-[9px] uppercase w-10">Set 1</div>
+                  <div className="text-center font-black text-gray-500 text-[9px] uppercase w-10">Set 2</div>
+                  <div className="text-center font-black text-gray-500 text-[9px] uppercase w-10">Set 3</div>
                   
-                  <div className="font-black text-stone-800 text-xs truncate">{showEditModal.player1}</div>
+                  <div className="font-black text-black text-xs truncate">{showEditModal.player1}</div>
                   {setScores.map((s, i) => (
                     <input 
                       key={i}
@@ -1056,14 +1056,14 @@ export default function App() {
                         newScores[i].p1 = e.target.value;
                         setSetScores(newScores);
                       }}
-                      className="w-10 h-10 text-center font-black bg-stone-100 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
+                      className="w-10 h-10 text-center font-black bg-gray-100 rounded-none focus:ring-2 focus:ring-red-500 outline-none text-sm"
                     />
                   ))}
                   {[...Array(3 - setScores.length)].map((_, i) => (
-                    <div key={i} className="w-10 h-10 bg-stone-50 rounded-lg border border-dashed border-stone-200" />
+                    <div key={i} className="w-10 h-10 bg-white rounded-none border border-dotted border-black" />
                   ))}
 
-                  <div className="font-black text-stone-800 text-xs truncate">{showEditModal.player2}</div>
+                  <div className="font-black text-black text-xs truncate">{showEditModal.player2}</div>
                   {setScores.map((s, i) => (
                     <input 
                       key={i}
@@ -1074,11 +1074,11 @@ export default function App() {
                         newScores[i].p2 = e.target.value;
                         setSetScores(newScores);
                       }}
-                      className="w-10 h-10 text-center font-black bg-stone-100 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
+                      className="w-10 h-10 text-center font-black bg-gray-100 rounded-none focus:ring-2 focus:ring-red-500 outline-none text-sm"
                     />
                   ))}
                   {[...Array(3 - setScores.length)].map((_, i) => (
-                    <div key={i} className="w-10 h-10 bg-stone-50 rounded-lg border border-dashed border-stone-200" />
+                    <div key={i} className="w-10 h-10 bg-white rounded-none border border-dotted border-black" />
                   ))}
                 </div>
 
@@ -1087,7 +1087,7 @@ export default function App() {
                     <button 
                       type="button"
                       onClick={() => setSetScores([...setScores, { p1: '', p2: '' }])}
-                      className="flex-1 py-2 border-2 border-dashed border-stone-200 rounded-xl text-stone-400 text-[10px] font-bold uppercase hover:border-emerald-500 hover:text-emerald-600 transition-all"
+                      className="flex-1 py-2 border-2 border-dotted border-black rounded-none text-gray-500 text-[10px] font-black uppercase hover:border-red-500 hover:text-red-600 transition-all"
                     >
                       + Add Set
                     </button>
@@ -1096,7 +1096,7 @@ export default function App() {
                     <button 
                       type="button"
                       onClick={() => setSetScores(setScores.slice(0, -1))}
-                      className="flex-1 py-2 border-2 border-dashed border-red-100 rounded-xl text-red-300 text-[10px] font-bold uppercase hover:border-red-500 hover:text-red-600 transition-all"
+                      className="flex-1 py-2 border-2 border-dotted border-red-100 rounded-none text-red-300 text-[10px] font-black uppercase hover:border-red-500 hover:text-red-600 transition-all"
                     >
                       - Remove Set
                     </button>
@@ -1108,13 +1108,13 @@ export default function App() {
                 <button 
                   type="button"
                   onClick={() => setShowEditModal(null)}
-                  className="flex-1 py-4 font-black text-stone-400 bg-stone-100 rounded-2xl hover:bg-stone-200 transition-colors"
+                  className="flex-1 py-4 font-black text-gray-500 bg-gray-100 rounded-none hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
-                  className="flex-1 py-4 font-black text-white bg-emerald-600 rounded-2xl hover:bg-emerald-700 shadow-xl shadow-emerald-600/20 transition-all"
+                  className="flex-1 py-4 font-black text-white bg-red-600 rounded-none hover:bg-red-700   transition-all"
                 >
                   Update
                 </button>
@@ -1126,22 +1126,22 @@ export default function App() {
 
       {/* Score Modal */}
       {showScoreModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/80 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-md">
           <motion.div 
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            className="bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl"
+            className="bg-white w-full max-w-sm rounded-none p-8 "
           >
-            <h3 className="text-2xl font-black mb-8 text-center tracking-tight">Match Score</h3>
+            <h3 className="text-2xl font-black mb-8 text-center tracking-tighter">Match Score</h3>
             
             <div className="space-y-6 mb-8">
               <div className="grid grid-cols-[1fr_auto_auto_auto] gap-3 items-center">
-                <div className="font-bold text-stone-400 text-xs uppercase tracking-widest">Player</div>
-                <div className="text-center font-bold text-stone-400 text-[10px] uppercase w-10">Set 1</div>
-                <div className="text-center font-bold text-stone-400 text-[10px] uppercase w-10">Set 2</div>
-                <div className="text-center font-bold text-stone-400 text-[10px] uppercase w-10">Set 3</div>
+                <div className="font-black text-gray-500 text-xs uppercase tracking-widest">Player</div>
+                <div className="text-center font-black text-gray-500 text-[10px] uppercase w-10">Set 1</div>
+                <div className="text-center font-black text-gray-500 text-[10px] uppercase w-10">Set 2</div>
+                <div className="text-center font-black text-gray-500 text-[10px] uppercase w-10">Set 3</div>
                 
-                <div className="font-black text-stone-800 truncate">{showScoreModal.player1}</div>
+                <div className="font-black text-black truncate">{showScoreModal.player1}</div>
                 {setScores.map((s, i) => (
                   <input 
                     key={i}
@@ -1152,14 +1152,14 @@ export default function App() {
                       newScores[i].p1 = e.target.value;
                       setSetScores(newScores);
                     }}
-                    className="w-10 h-12 text-center font-black bg-stone-100 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                    className="w-10 h-12 text-center font-black bg-gray-100 rounded-none focus:ring-2 focus:ring-red-500 outline-none"
                   />
                 ))}
                 {[...Array(3 - setScores.length)].map((_, i) => (
-                  <div key={i} className="w-10 h-12 bg-stone-50 rounded-xl border border-dashed border-stone-200" />
+                  <div key={i} className="w-10 h-12 bg-white rounded-none border border-dotted border-black" />
                 ))}
 
-                <div className="font-black text-stone-800 truncate">{showScoreModal.player2}</div>
+                <div className="font-black text-black truncate">{showScoreModal.player2}</div>
                 {setScores.map((s, i) => (
                   <input 
                     key={i}
@@ -1170,18 +1170,18 @@ export default function App() {
                       newScores[i].p2 = e.target.value;
                       setSetScores(newScores);
                     }}
-                    className="w-10 h-12 text-center font-black bg-stone-100 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                    className="w-10 h-12 text-center font-black bg-gray-100 rounded-none focus:ring-2 focus:ring-red-500 outline-none"
                   />
                 ))}
                 {[...Array(3 - setScores.length)].map((_, i) => (
-                  <div key={i} className="w-10 h-12 bg-stone-50 rounded-xl border border-dashed border-stone-200" />
+                  <div key={i} className="w-10 h-12 bg-white rounded-none border border-dotted border-black" />
                 ))}
               </div>
 
               {setScores.length < 3 && (
                 <button 
                   onClick={() => setSetScores([...setScores, { p1: '', p2: '' }])}
-                  className="w-full py-3 border-2 border-dashed border-stone-200 rounded-2xl text-stone-400 text-xs font-bold uppercase hover:border-emerald-500 hover:text-emerald-600 transition-all"
+                  className="w-full py-3 border-2 border-dotted border-black rounded-none text-gray-500 text-xs font-black uppercase hover:border-red-500 hover:text-red-600 transition-all"
                 >
                   + Add Set
                 </button>
@@ -1189,7 +1189,7 @@ export default function App() {
               {setScores.length > 1 && (
                 <button 
                   onClick={() => setSetScores(setScores.slice(0, -1))}
-                  className="w-full py-3 border-2 border-dashed border-red-100 rounded-2xl text-red-300 text-xs font-bold uppercase hover:border-red-500 hover:text-red-600 transition-all mt-2"
+                  className="w-full py-3 border-2 border-dotted border-red-100 rounded-none text-red-300 text-xs font-black uppercase hover:border-red-500 hover:text-red-600 transition-all mt-2"
                 >
                   - Remove Set
                 </button>
@@ -1202,13 +1202,13 @@ export default function App() {
                   setShowScoreModal(null);
                   setSetScores([{ p1: '', p2: '' }]);
                 }}
-                className="flex-1 py-4 font-black text-stone-400 bg-stone-100 rounded-2xl hover:bg-stone-200 transition-colors"
+                className="flex-1 py-4 font-black text-gray-500 bg-gray-100 rounded-none hover:bg-gray-200 transition-colors"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleUpdateScore}
-                className="flex-1 py-4 font-black text-white bg-emerald-600 rounded-2xl hover:bg-emerald-700 shadow-xl shadow-emerald-600/20 transition-all"
+                className="flex-1 py-4 font-black text-white bg-red-600 rounded-none hover:bg-red-700   transition-all"
               >
                 Save
               </button>
@@ -1218,25 +1218,25 @@ export default function App() {
       )}
 
       {/* Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-stone-200 px-6 py-3 pb-8 z-10">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-black px-6 py-3 pb-8 z-10">
         <div className="max-w-md mx-auto flex items-center justify-between">
           <button 
             onClick={() => setView('dashboard')}
-            className={`flex flex-col items-center gap-1.5 transition-all ${view === 'dashboard' ? 'text-emerald-600 scale-110' : 'text-stone-400'}`}
+            className={`flex flex-col items-center gap-1.5 transition-all ${view === 'dashboard' ? 'text-red-600 scale-110' : 'text-gray-500'}`}
           >
             <LayoutDashboard className="w-6 h-6" />
             <span className="text-[9px] font-black uppercase tracking-widest">Home</span>
           </button>
           <button 
             onClick={() => setView('schedule')}
-            className={`flex flex-col items-center gap-1.5 transition-all ${view === 'schedule' ? 'text-emerald-600 scale-110' : 'text-stone-400'}`}
+            className={`flex flex-col items-center gap-1.5 transition-all ${view === 'schedule' ? 'text-red-600 scale-110' : 'text-gray-500'}`}
           >
             <PlusCircle className="w-6 h-6" />
             <span className="text-[9px] font-black uppercase tracking-widest">Add</span>
           </button>
           <button 
             onClick={() => setView('history')}
-            className={`flex flex-col items-center gap-1.5 transition-all ${view === 'history' ? 'text-emerald-600 scale-110' : 'text-stone-400'}`}
+            className={`flex flex-col items-center gap-1.5 transition-all ${view === 'history' ? 'text-red-600 scale-110' : 'text-gray-500'}`}
           >
             <History className="w-6 h-6" />
             <span className="text-[9px] font-black uppercase tracking-widest">History</span>

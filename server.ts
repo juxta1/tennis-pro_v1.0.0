@@ -9,10 +9,11 @@ import cookieSession from "cookie-session";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const dbPath = process.env.DB_PATH || "tennis_league.db";
 let db: Database.Database;
 try {
-  db = new Database("tennis_league.db");
-  console.log("Database connected successfully.");
+  db = new Database(dbPath);
+  console.log(`Database connected successfully at ${dbPath}`);
 } catch (e) {
   console.error("Failed to connect to database:", e);
   process.exit(1);
